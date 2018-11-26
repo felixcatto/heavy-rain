@@ -18,7 +18,10 @@ const withSubscription = WrappedComponent => class WithSubscription extends Reac
   }
 
   componentDidMount() {
-    const ws = new WebSocket('ws://localhost:4000');
+    const HOST = location.origin.replace(/^http/, 'ws')
+    const ws = new WebSocket(HOST);
+    // const ws = new WebSocket('ws://localhost:4000');
+
     this.setState({ ws });
 
     ws.addEventListener('open', () => {
