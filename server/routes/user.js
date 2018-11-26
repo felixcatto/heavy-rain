@@ -8,7 +8,7 @@ export default (router) => {
     'firstName',
     'lastName',
     'email',
-    'password',
+    'passwordDigest',
   ];
 
   router

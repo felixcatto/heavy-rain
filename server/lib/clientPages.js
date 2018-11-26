@@ -1,4 +1,4 @@
 module.exports = [
-  'common.index',
-  'chat.index',
+  'common/index',
+  'chat/index',
 ];

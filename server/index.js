@@ -33,7 +33,7 @@ app.use(methodOverride('_method'));
 
 const pug = new Pug({
   viewPath: path.join(__dirname, 'views'),
-  noCache: true,
+  noCache: process.env.NODE_ENV !== 'production',
   debug: true,
   pretty: true,
   compileDebug: true,

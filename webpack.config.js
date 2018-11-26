@@ -7,7 +7,7 @@ const clientPages = require('./server/lib/clientPages');
 
 const entries = clientPages.reduce((acc, page) => ({
   ...acc,
-  [page]: path.resolve(__dirname, `server/views/${page.replace(/\./g, '/')}.client.js`)
+  [page]: path.resolve(__dirname, `server/views/${page}.client.js`)
 }), {});
 
 const common = {
@@ -33,17 +33,17 @@ const common = {
       },
     ],
   },
-  // optimization: {
-  //   splitChunks: {
-  //     cacheGroups: {
-  //       vendors: {
-  //         name: 'vendors',
-  //         chunks: 'initial',
-  //         test: /node_modules/,
-  //       },
-  //     }
-  //   },
-  // },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendors: {
+          name: 'vendors',
+          chunks: 'initial',
+          test: /node_modules/,
+        },
+      }
+    },
+  },
   stats: {
     warnings: false,
     children: false,

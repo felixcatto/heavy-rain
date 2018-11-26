@@ -4,6 +4,11 @@ import PropTypes from 'prop-types';
 import Textarea from 'react-textarea-autosize';
 
 
+const chatEl = document.querySelector('#chat');
+const hostname = chatEl.getAttribute('data-hostname');
+const port = chatEl.getAttribute('data-port');
+
+
 const withSubscription = WrappedComponent => class WithSubscription extends React.Component {
   constructor(props) {
     super(props);
@@ -18,9 +23,7 @@ const withSubscription = WrappedComponent => class WithSubscription extends Reac
   }
 
   componentDidMount() {
-    const HOST = location.origin.replace(/^http/, 'ws')
-    const ws = new WebSocket(HOST);
-    // const ws = new WebSocket('ws://localhost:4000');
+    const ws = new WebSocket(`ws://${hostname}:${port}`);
 
     this.setState({ ws });
 
@@ -148,4 +151,4 @@ class Chat extends React.Component {
 
 const ChatContainer = withSubscription(Chat);
 
-render(<ChatContainer/>, document.querySelector('#chat'));
+render(<ChatContainer/>, chatEl);

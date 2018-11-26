@@ -5,9 +5,9 @@ module.exports = {
     storage: './mydb.sqlite',
   },
   test: {
-    host: process.env.DB_HOST,
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
+    host: '127.0.0.1',
+    username: 'postgres',
+    password: '1',
     database: 'database_production',
     operatorsAliases: false,
     dialect: 'postgres',

@@ -29,6 +29,13 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb-20
           a(class=activeLink(urlFor('articles')) href=`${urlFor('articles')}`) Articles
         li.nav-item
           a(class=activeLink(urlFor('chat')) href=`${urlFor('chat')}`) Chat
+        li.nav-item
+          a(
+            class="nav-link"
+            href="https://github.com/felixcatto/heavy-rain"
+            target="_blank"
+          ) Github Repo
+
       div
         if isSignedIn()
           span.mr-10 #{user.firstName} #{user.lastName}

@@ -6,9 +6,8 @@ export default async (ctx, next) => {
 
   ctx.render = (path, locals = {}) => {
     pugRender(path, locals);
-    const clientScriptName = path.replace(/\//g, '.');
-    const script = clientPages.includes(clientScriptName)
-      ? `<script src="/js/${clientScriptName}.js" async></script>`
+    const script = clientPages.includes(path)
+      ? `<script src="/js/${path}.js" defer></script>`
       : '';
     const body = ctx.body.replace('{{clientPageScript}}', script);
     ctx.body = body;
