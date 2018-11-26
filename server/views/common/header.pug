@@ -1,0 +1,39 @@
+-
+  const activeLink = (choosenUrl) => {
+    if (currentUrl !== '/' && choosenUrl === '/') {
+      return 'nav-link';
+    }
+
+    return cn('nav-link', {
+      'active': currentUrl.startsWith(choosenUrl),
+    });
+  };
+
+nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb-20
+  .container
+    img.logo(src="/img/heavy-rain.png")
+    button.navbar-toggler(
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarSupportedContent"
+    )
+      span.navbar-toggler-icon
+
+    .collapse.navbar-collapse(id="navbarSupportedContent")
+      ul.navbar-nav.mr-auto
+        li.nav-item
+          a(class=activeLink(urlFor('root')) href=`${urlFor('root')}`) Home
+        li.nav-item
+          a(class=activeLink(urlFor('users')) href=`${urlFor('users')}`) Users
+        li.nav-item
+          a(class=activeLink(urlFor('articles')) href=`${urlFor('articles')}`) Articles
+        li.nav-item
+          a(class=activeLink(urlFor('chat')) href=`${urlFor('chat')}`) Chat
+      div
+        if isSignedIn()
+          span.mr-10 #{user.firstName} #{user.lastName}
+          +link(`${urlFor('session')}?_method=DELETE`)
+            button.fa.fa-sign-out-alt.fa-control(type="submit" title="Logout")
+        else
+          span.mr-10 Guest
+          a.fa.fa-sign-in-alt.fa-control(href=`${urlFor('newSession')}` title="Login")

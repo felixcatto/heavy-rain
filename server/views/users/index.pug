@@ -1,0 +1,27 @@
+extends ../common/layout.pug
+
+block content
+  .container
+    h1 Users List
+
+    a.d-inline-block.mb-20(href=`${urlFor('newUser')}`)
+      button.btn.btn-primary Create new user
+
+    table.table
+      tr
+        th id
+        th firstName
+        th lastName
+        th email
+        th
+      for user in users
+        tr
+          td #{user.id}
+          td #{user.firstName}
+          td #{user.lastName}
+          td #{user.email}
+          td.text-right
+            a.d-inline-block(href=`${urlFor('editUser', user.id)}`)
+              button.btn.btn-sm.btn-outline-primary.mr-5 Edit user
+            +link(`${urlFor('user', user.id)}?_method=DELETE`)
+              button.btn.btn-sm.btn-outline-primary(type="submit") Remove user

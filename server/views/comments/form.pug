@@ -1,0 +1,26 @@
+//- article: Article
+//- comment: Comment
+-
+  const action = type === 'edit'
+    ? `${urlFor('comment', article.id, comment.id)}?_method=PUT`
+    : `${urlFor('comments', article.id)}`;
+  const backUrl = type === 'edit'
+    ? `${urlFor('article', article.id)}`
+    : `${urlFor('articles')}`;
+
+form(method="post", action=`${action}`)
+  .row.mb-20
+    .col-6
+      .mb-15
+        label Author
+        input.form-control(name="author", value=`${comment.author}`)
+      div
+        label Text
+        input.form-control(name="text", value=`${comment.text}`)
+
+  a.d-inline-block.mr-10(href=`${backUrl}`) Back
+  button.btn.btn-primary(type="submit")
+    if type === 'edit'
+      | Save
+    else
+      | Add comment

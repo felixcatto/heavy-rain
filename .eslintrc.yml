@@ -1,0 +1,19 @@
+env:
+  node: true
+  browser: true
+
+parser: babel-eslint
+
+extends:
+  - 'airbnb-base'
+  - 'plugin:react/recommended'
+
+settings:
+  import/resolver: webpack
+  react:
+    version: '16.6.0'
+
+rules:
+  import/prefer-default-export: 0
+  operator-linebreak: 0
+  no-console: 1

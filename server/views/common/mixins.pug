@@ -1,0 +1,7 @@
+mixin error(f, property)
+  if f.errors && f.errors[property]
+    div.error= f.errors[property]
+
+mixin link(action)
+  form.d-inline-block(method="POST", action=`${action}`)
+    block

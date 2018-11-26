@@ -1,0 +1,25 @@
+-
+  const action = type === 'edit'
+    ? `${urlFor('user', user.id)}?_method=PUT`
+    : `${urlFor('users')}`;
+
+form(action=`${action}`, method="POST")
+  .row.mb-20
+    .col-6
+      .mb-15
+        label First Name
+        input.form-control(name="firstName", value=`${user.firstName}`)
+      .mb-15
+        label Last Name
+        input.form-control(name="lastName", value=`${user.lastName}`)
+      .mb-15
+        label Email
+        input.form-control(name="email", value=`${user.email}`)
+        +error(user, 'email')
+      div
+        label Password
+        input.form-control(name="password", value=`${user.password}`, type="password")
+        +error(user, 'password')
+
+  a.mr-10(href=`${urlFor('users')}`) Back
+  button.btn.btn-primary(type="submit") Save

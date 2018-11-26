@@ -1,0 +1,27 @@
+extends ../common/layout.pug
+
+block content
+  .container
+    h1 Articles List
+
+    a.d-inline-block.mb-20(href=`${urlFor('newArticle')}`)
+      button.btn.btn-primary Create new article
+
+    table.table
+      tr
+        th id
+        th title
+        th text
+        th
+      for article in articles
+        tr
+          td #{article.id}
+          td #{article.title}
+          td #{article.text}
+          td.d-flex.justify-content-end
+            a(href=`${urlFor('article', article.id)}`)
+              button.btn.btn-sm.btn-outline-primary.mr-5 Show article
+            a(href=`${urlFor('editArticle', article.id)}`)
+              button.btn.btn-sm.btn-outline-primary.mr-5 Edit article
+            +link(`${urlFor('article', article.id)}?_method=DELETE`)
+              button.btn.btn-sm.btn-outline-primary(type="submit") Remove article

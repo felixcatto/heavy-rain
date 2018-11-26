@@ -1,0 +1,17 @@
+extends ../common/layout.pug
+
+block content
+  .container
+    form(action=`${urlFor('session')}`, method="POST")
+      .row.mb-20
+        .col-6
+          .mb-15
+            label Email
+            input.form-control(name="email", value=`${user.email}`)
+            +error(user, 'email')
+          div
+            label Password
+            input.form-control(name="password", value=`${user.password}`, type="password")
+
+      a.mr-10(href=`${urlFor('root')}`) Back
+      button.btn.btn-primary(type="submit") Login

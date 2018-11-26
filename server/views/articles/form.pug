@@ -1,0 +1,15 @@
+-
+  const action = type === 'edit'
+    ? `${urlFor('article', article.id)}?_method=PUT`
+    : `${urlFor('articles')}`;
+
+form(action=`${action}`, method="POST")
+  .row.mb-20
+    .col-6
+      label Title
+      input.form-control(name="title", value=`${article.title}`)
+    .col-6
+      label Text
+      input.form-control(name="text", value=`${article.text}`)
+  a.mr-10(href=`${urlFor('articles')}`) Back
+  button.btn.btn-primary(type="submit") Save

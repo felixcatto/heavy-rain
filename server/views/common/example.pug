@@ -1,0 +1,46 @@
+-
+  var users = [
+    {name: 'Vasa', role: 'admin'},
+    {name: 'Fedya', role: 'manager'},
+    {name: 'Rabotyaga', role: 'technician'}
+  ]
+
+mixin user(user)
+  li #{user.name} has a role of #{user.role}
+
+
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+  body
+    h1 Pug - node template engine
+
+    #container.col
+      if youAreUsingPug
+        p You are amazing
+      else
+        p Get on it!
+      p.
+        Pug is a terse and simple templating language with a
+        strong focus on performance and powerful features.
+        let me in? #{foo}
+      p And again? #{someKey}
+
+      ul
+        li: a(href="#target1", title="Home") Home
+        li: a(href="#target2", title="Contact") Contact
+      
+      h2 Helpers
+
+      each user, index in users
+        unless user.role === 'admin'
+          p #{user.name} is not an "admin"
+        else
+          p #{user.name} is an "admin"
+
+      h2 Mixins
+      for user in users
+        +user(user)
+
+      script(src='/js/index.js')

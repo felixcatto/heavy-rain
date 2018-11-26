@@ -1,0 +1,37 @@
+:root {
+  --inputHeight: 38px;
+}
+
+$headerHeight: 66px + 20px;
+$chatTitle: 48px + 25px;
+$historyMargin: 20px;
+$chatPaddingBottom: 30px;
+$chatHistoryHeight: calc(100vh - #{$headerHeight + $chatTitle + $historyMargin + $chatPaddingBottom} - var(--inputHeight));
+
+.chat {
+  padding-bottom: $chatPaddingBottom;
+
+  &__history {
+    height: $chatHistoryHeight;
+    overflow: auto;
+  }
+  &__message-wrap {
+    display: flex;
+    margin-bottom: 5px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  &__user-avatar {
+    flex: 0 0 40px;
+    width: 40px;
+    margin-right: 10px;
+    align-self: flex-start;
+  }
+  &__user-name {
+    font-weight: bold;
+  }
+  &__user-message {
+    white-space: pre;
+  }
+}

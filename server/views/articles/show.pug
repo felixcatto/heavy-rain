@@ -1,0 +1,25 @@
+extends ../common/layout.pug
+
+block content
+  .container.pb-40
+    .mb-40
+      h1 #{article.title}
+      p #{article.text}
+
+    .mb-40
+      h1 Comments
+      for comment in comments
+        .row.mb-5
+          .col-6
+            .d-flex
+              h5.mr-10.mb-0 #{comment.author}
+              div.d-flex.align-items-center
+                a.fa.fa-edit.fa-control(
+                  href=`${urlFor('editComment', article.id, comment.id)}`
+                  title="Edit comment"
+                )
+                +link(`${urlFor('comment', article.id, comment.id)}?_method=delete`)
+                  button.fa.fa-times.fa-control(title="Delete comment")
+        p #{comment.text}
+
+    include ../comments/form
