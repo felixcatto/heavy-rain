@@ -17,12 +17,10 @@ webpack_bundle:
 	NODE_ENV=production npx webpack-cli
 
 lint:
-	npx eslint server;
-	npx eslint client;
+	npx eslint .
 
 lint-fix:
-	npx eslint --fix server;
-	npx eslint --fix client;
+	npx eslint --fix .
 
 migrate:
 	npx sequelize db:migrate

@@ -1,13 +1,11 @@
 const path = require('path');
-const webpack = require('webpack');
 const merge = require('webpack-merge');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const clientPages = require('./server/lib/clientPages');
+const clientPages = require('./lib/clientPages');
 
 
 const entries = clientPages.reduce((acc, page) => ({
   ...acc,
-  [page]: path.resolve(__dirname, `server/views/${page}.client.js`)
+  [page]: path.resolve(__dirname, `views/${page}.client.js`),
 }), {});
 
 const common = {
@@ -19,7 +17,7 @@ const common = {
   },
   resolve: {
     alias: {
-      Client: path.resolve(__dirname, 'client'),
+      Client: path.resolve(__dirname, 'clientComponents'),
     },
   },
   module: {
@@ -41,7 +39,7 @@ const common = {
           chunks: 'initial',
           test: /node_modules/,
         },
-      }
+      },
     },
   },
   stats: {

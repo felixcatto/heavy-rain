@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { default: app } = require('../server');
+import app from '../main';
 
 
 app.listen(process.env.PORT || 4000);

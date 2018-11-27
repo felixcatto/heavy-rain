@@ -1,4 +1,3 @@
-const path = require('path');
 const gulp = require('gulp');
 const del = require('del');
 const webpack = require('webpack');
@@ -6,12 +5,20 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const babel = require('gulp-babel');
 const { spawn } = require('child_process');
 const Browser = require('browser-sync');
-const webpackConfig = require('./webpack.config.js');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
 const postcss = require('gulp-postcss');
 const cssImport = require('postcss-import');
+const webpackConfig = require('./webpack.config.js');
 
+
+const serverJsPath = [
+  '*/**/*.js',
+  '!node_modules/**',
+  '!dist/**',
+  '!clientComponents/**',
+  '!views/**/*.js',
+];
 
 const devServer = Browser.create();
 const bundler = webpack(webpackConfig);
@@ -48,33 +55,31 @@ const reload = (done) => {
   }, 250);
 };
 
-const transpileScss = () => gulp.src(['public/**/*.scss', 'server/views/**/*.scss'])
+const transpileScss = () => gulp.src(['public/**/*.scss', 'views/**/*.scss'])
   .pipe(sass())
   .pipe(postcss([cssImport()]))
   .pipe(concat('index.css'))
   .pipe(gulp.dest('dist/public/css'));
 
-const copyViews = () => gulp.src('server/views/**/*.pug').pipe(gulp.dest('dist/server/views'));
+const copyViews = () => gulp.src('views/**/*.pug').pipe(gulp.dest('dist/views'));
 
 const copyMisc = gulp.series(
-  () => gulp.src('bin/*.js').pipe(gulp.dest('dist/bin')),
-  () => gulp.src('server/config/*').pipe(gulp.dest('dist/server/config')),
   () => gulp.src('public/font/*').pipe(gulp.dest('dist/public/font')),
   () => gulp.src('public/img/*').pipe(gulp.dest('dist/public/img')),
 );
 
 const bundleClientJs = done => bundler.run(done);
 
-const transpileServerJs = () => gulp.src('server/**/*.js')
+const transpileServerJs = () => gulp.src(serverJsPath)
   .pipe(babel())
-  .pipe(gulp.dest('dist/server'));
+  .pipe(gulp.dest('dist'));
 
 const clean = () => del(['dist']);
 
 const watch = () => {
-  gulp.watch('server/**/*.js', gulp.series(transpileServerJs, startServer, reload));
-  gulp.watch('server/views/**/*.pug', gulp.series(copyViews, reload));
-  gulp.watch(['public/**/*.scss', 'server/views/**/*.scss'], gulp.series(transpileScss, reload));
+  gulp.watch(serverJsPath, gulp.series(transpileServerJs, startServer, reload));
+  gulp.watch('views/**/*.pug', gulp.series(copyViews, reload));
+  gulp.watch(['public/**/*.scss', 'views/**/*.scss'], gulp.series(transpileScss, reload));
 };
 
 

@@ -5,8 +5,8 @@ import Textarea from 'react-textarea-autosize';
 
 
 const chatEl = document.querySelector('#chat');
-const hostname = chatEl.getAttribute('data-hostname');
-const port = chatEl.getAttribute('data-port');
+const wsUrl = chatEl.getAttribute('data-ws-url')
+  || window.location.origin.replace(/^http/, 'ws');
 
 
 const withSubscription = WrappedComponent => class WithSubscription extends React.Component {
@@ -23,7 +23,7 @@ const withSubscription = WrappedComponent => class WithSubscription extends Reac
   }
 
   componentDidMount() {
-    const ws = new WebSocket(`ws://${hostname}:${port}`);
+    const ws = new WebSocket(wsUrl);
 
     this.setState({ ws });
 

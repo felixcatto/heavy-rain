@@ -6,17 +6,15 @@ import Pug from 'koa-pug';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 import methodOverride from 'koa-methodoverride';
-import session from 'koa-generic-session';
 import logger from 'koa-logger';
 import cn from 'classnames';
-import flash from 'koa-flash-simple';
 import WebSocket from 'ws';
-import './lib/container';
-import applyRouting from './routes';
-import db from './models';
-import patchedPugRender from './lib/patchedPugRender';
-import makeChat from './lib/chat';
-import { keys } from './lib/secure';
+import '../lib/container';
+import applyRouting from '../routes';
+import db from '../models';
+import patchedPugRender from '../lib/patchedPugRender';
+import makeChat from '../lib/chat';
+import { keys } from '../lib/secure';
 
 
 const app = new Koa();
@@ -24,21 +22,19 @@ const router = new Router();
 
 app.keys = keys;
 
-app.use(session(app));
-app.use(flash());
 app.use(logger());
 app.use(serve(path.join(__dirname, '../public')));
 app.use(bodyParser());
 app.use(methodOverride('_method'));
 
 const pug = new Pug({
-  viewPath: path.join(__dirname, 'views'),
+  viewPath: path.join(__dirname, '../views'),
   noCache: process.env.NODE_ENV !== 'production',
   debug: true,
   pretty: true,
   compileDebug: true,
   locals: [],
-  basedir: path.join(__dirname, 'views'),
+  basedir: path.join(__dirname, '../views'),
   helperPath: [
     {
       urlFor: (...args) => router.url(...args),
@@ -59,7 +55,7 @@ app.use(async (ctx, next) => {
 
   ctx.state = {
     flash: ctx.flash,
-    isSignedIn: () => userId !== undefined,
+    isSignedIn: () => Boolean(user),
     currentUrl: ctx.url,
     userId,
     user,

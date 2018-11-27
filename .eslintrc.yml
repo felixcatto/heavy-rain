@@ -16,4 +16,6 @@ settings:
 rules:
   import/prefer-default-export: 0
   operator-linebreak: 0
+  func-names: 0
+  import/newline-after-import: 0
   no-console: 1

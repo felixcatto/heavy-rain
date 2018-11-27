@@ -20,7 +20,6 @@ export default (router) => {
       });
 
       if (user?.passwordDigest === encrypt(password)) {
-        ctx.session.userId = user.id;
         ctx.cookies.set('userId', user.id, { signed: true });
         ctx.redirect(router.url('root'));
         return;
@@ -38,7 +37,6 @@ export default (router) => {
     })
 
     .delete('session', '/session', (ctx) => {
-      ctx.session = {};
       ctx.cookies.set('userId', null, { signed: true });
       ctx.redirect(router.url('root'));
     });
