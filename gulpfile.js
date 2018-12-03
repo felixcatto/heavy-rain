@@ -3,7 +3,6 @@ const del = require('del');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const babel = require('gulp-babel');
-const { spawn } = require('child_process');
 const Browser = require('browser-sync');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
@@ -20,17 +19,26 @@ const serverJsPath = [
   '!views/**/*.js',
 ];
 
+let server;
 const devServer = Browser.create();
 const bundler = webpack(webpackConfig);
 bundler.plugin('done', () => devServer.reload());
 
-let node;
+const clearCache = () => Object.keys(require.cache)
+  .filter(p => !p.match(/node_modules/) && p.match(/dist/))
+  .forEach(key => delete require.cache[key]);
+
 const startServer = (done) => {
-  if (node) node.kill();
-  node = spawn('node', ['dist/bin/server.js'], { stdio: 'inherit' });
-  done();
+  const app = require('./dist/main').default; // eslint-disable-line
+  server = app.listen(process.env.PORT || 4000, done);
 };
-process.on('exit', () => node && node.kill());
+
+const reloadServer = (done) => {
+  server.close(() => {
+    clearCache();
+    startServer(done);
+  });
+};
 
 const startDevServer = (done) => {
   devServer.init({
@@ -48,11 +56,9 @@ const startDevServer = (done) => {
   done();
 };
 
-const reload = (done) => {
-  setTimeout(() => {
-    devServer.reload();
-    setTimeout(done, 50);
-  }, 250);
+const reloadDev = (done) => {
+  devServer.reload();
+  done();
 };
 
 const transpileScss = () => gulp.src(['public/**/*.scss', 'views/**/*.scss'])
@@ -77,9 +83,9 @@ const transpileServerJs = () => gulp.src(serverJsPath)
 const clean = () => del(['dist']);
 
 const watch = () => {
-  gulp.watch(serverJsPath, gulp.series(transpileServerJs, startServer, reload));
-  gulp.watch('views/**/*.pug', gulp.series(copyViews, reload));
-  gulp.watch(['public/**/*.scss', 'views/**/*.scss'], gulp.series(transpileScss, reload));
+  gulp.watch(serverJsPath, gulp.series(transpileServerJs, reloadServer, reloadDev));
+  gulp.watch('views/**/*.pug', gulp.series(copyViews, reloadDev));
+  gulp.watch(['public/**/*.scss', 'views/**/*.scss'], gulp.series(transpileScss, reloadDev));
 };
 
 
