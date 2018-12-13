@@ -1,5 +1,6 @@
-import { User } from '../models';
+import { User, Role } from '../models';
 import { emptyObject } from '../lib/utils';
+import { requireAdmin, requireOwnership } from '../lib/middlewares';
 import buildFormObj from '../lib/formObjectBuilder';
 
 
@@ -10,18 +11,24 @@ export default (router) => {
     'email',
     'passwordDigest',
   ];
+  const userFieldsForAdmin = userFields.concat('RoleId');
 
   router
     .get('users', '/users', async (ctx) => {
-      const users = await User.findAll({ raw: true });
+      const users = await User.findAll({ include: [Role] });
       ctx.render('users/index', { users });
     })
 
-    .get('newUser', '/users/new', (ctx) => {
-      ctx.render('users/new', { user: emptyObject });
+    .get('newUser', '/users/new', requireAdmin, async (ctx) => {
+      const roles = await Role.findAll({ raw: true });
+      ctx.render('users/new', {
+        user: emptyObject,
+        roles,
+      });
     })
 
-    .get('editUser', '/users/:id/edit', async (ctx) => {
+    .get('editUser', '/users/:id/edit', requireOwnership, async (ctx) => {
+      const roles = await Role.findAll({ raw: true });
       const user = await User.findOne({
         where: { id: ctx.params.id },
         raw: true,
@@ -32,14 +39,15 @@ export default (router) => {
           ...user,
           password: '',
         },
+        roles,
         type: 'edit',
       });
     })
 
-    .post('users', '/users', async (ctx) => {
+    .post('users', '/users', requireAdmin, async (ctx) => {
       try {
         await User.create(ctx.request.body, {
-          fields: userFields,
+          fields: userFieldsForAdmin,
         });
         ctx.redirect(router.url('users'));
       } catch (e) {
@@ -49,11 +57,15 @@ export default (router) => {
       }
     })
 
-    .put('user', '/users/:id', async (ctx) => {
+    .put('user', '/users/:id', requireOwnership, async (ctx) => {
+      const { isAdmin } = ctx.state;
+
       try {
         await User.update(ctx.request.body, {
           where: { id: ctx.params.id },
-          fields: userFields,
+          fields: isAdmin
+            ? userFieldsForAdmin
+            : userFields,
         });
         ctx.redirect(router.url('users'));
       } catch (e) {
@@ -64,7 +76,7 @@ export default (router) => {
       }
     })
 
-    .delete('user', '/users/:id', async (ctx) => {
+    .delete('user', '/users/:id', requireAdmin, async (ctx) => {
       await User.destroy({ where: { id: ctx.params.id } });
       ctx.redirect(router.url('users'));
     });

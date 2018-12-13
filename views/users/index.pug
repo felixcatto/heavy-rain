@@ -4,8 +4,9 @@ block content
   .container
     h1 Users List
 
-    a.d-inline-block.mb-20(href=`${urlFor('newUser')}`)
-      button.btn.btn-primary Create new user
+    if isAdmin
+      a.d-inline-block.mb-20(href=`${urlFor('newUser')}`)
+        button.btn.btn-primary Create new user
 
     table.table
       tr
@@ -21,7 +22,9 @@ block content
           td #{user.lastName}
           td #{user.email}
           td.text-right
-            a.d-inline-block(href=`${urlFor('editUser', user.id)}`)
-              button.btn.btn-sm.btn-outline-primary.mr-5 Edit user
-            +link(`${urlFor('user', user.id)}?_method=DELETE`)
-              button.btn.btn-sm.btn-outline-primary(type="submit") Remove user
+            if isOwner(user)
+              a.d-inline-block(href=`${urlFor('editUser', user.id)}`)
+                button.btn.btn-sm.btn-outline-primary.mr-5 Edit user
+            if isAdmin
+              +link(`${urlFor('user', user.id)}?_method=DELETE`)
+                button.btn.btn-sm.btn-outline-primary(type="submit") Remove user

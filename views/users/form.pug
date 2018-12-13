@@ -20,6 +20,15 @@ form(action=`${action}`, method="POST")
         label Password
         input.form-control(name="password", value=`${user.password}`, type="password")
         +error(user, 'password')
+      if isAdmin
+        div.mt-15
+          label Role
+          select.form-control(name="RoleId")
+            for role in roles
+              option(
+                value=`${role.id}`
+                selected=(role.id === user.RoleId)
+              ) #{_.capitalize(role.name)}
 
   a.mr-10(href=`${urlFor('users')}`) Back
   button.btn.btn-primary(type="submit") Save

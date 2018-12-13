@@ -9,13 +9,14 @@ import methodOverride from 'koa-methodoverride';
 import logger from 'koa-logger';
 import cn from 'classnames';
 import WebSocket from 'ws';
+import _ from 'lodash';
 import container from '../lib/container';
 import applyRouting from '../routes';
 import patchedPugRender from '../lib/patchedPugRender';
 import makeChat from '../lib/chat';
 import { keys } from '../lib/secure';
 import {
-  guestUser, isAdmin, isUser, isGuest,
+  guestUser, isAdmin, isUser, isGuest, isOwner,
 } from '../lib/utils';
 
 
@@ -41,6 +42,7 @@ const pug = new Pug({
     {
       urlFor: (...args) => router.url(...args),
       cn,
+      _,
     },
   ],
 });
@@ -50,26 +52,27 @@ app.use(async (ctx, next) => {
   const { db } = container;
   const userId = ctx.cookies.get('userId', { signed: true });
 
-  let user = await db.User.findOne({
+  let currentUser = await db.User.findOne({
     where: { id: userId },
     include: [{ model: db.Role }],
   });
 
-  if (!user) {
-    user = guestUser;
+  if (!currentUser) {
+    currentUser = guestUser;
   } else {
-    user = user.get({ plain: true });
+    currentUser = currentUser.get({ plain: true });
   }
 
   ctx.state = {
-    isSignedIn: !isGuest(user),
+    isSignedIn: !isGuest(currentUser),
     currentUrl: ctx.url,
     userId,
-    user,
+    currentUser,
     db,
-    isAdmin,
-    isUser,
-    isGuest,
+    isAdmin: isAdmin(currentUser),
+    isUser: isUser(currentUser),
+    isGuest: isGuest(currentUser),
+    isOwner: isOwner(currentUser),
   };
 
   await next();
