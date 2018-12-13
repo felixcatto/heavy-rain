@@ -36,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   User.associate = function (models) {
     User.hasMany(models.Message);
+    User.belongsTo(models.Role);
   };
   return User;
 };

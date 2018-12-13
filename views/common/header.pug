@@ -37,10 +37,9 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb-20
           ) Github Repo
 
       div
-        if isSignedIn()
-          span.mr-10 #{user.firstName} #{user.lastName}
+        span.mr-10 #{user.firstName} #{user.lastName} (#{user.Role.name})
+        if isSignedIn
           +link(`${urlFor('session')}?_method=DELETE`)
             button.fa.fa-sign-out-alt.fa-control(type="submit" title="Logout")
         else
-          span.mr-10 Guest
           a.fa.fa-sign-in-alt.fa-control(href=`${urlFor('newSession')}` title="Login")

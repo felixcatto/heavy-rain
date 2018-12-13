@@ -14,6 +14,9 @@ import applyRouting from '../routes';
 import patchedPugRender from '../lib/patchedPugRender';
 import makeChat from '../lib/chat';
 import { keys } from '../lib/secure';
+import {
+  guestUser, isAdmin, isUser, isGuest,
+} from '../lib/utils';
 
 
 const app = new Koa();
@@ -47,18 +50,26 @@ app.use(async (ctx, next) => {
   const { db } = container;
   const userId = ctx.cookies.get('userId', { signed: true });
 
-  const user = await db.User.findOne({
+  let user = await db.User.findOne({
     where: { id: userId },
-    raw: true,
+    include: [{ model: db.Role }],
   });
 
+  if (!user) {
+    user = guestUser;
+  } else {
+    user = user.get({ plain: true });
+  }
+
   ctx.state = {
-    flash: ctx.flash,
-    isSignedIn: () => Boolean(user),
+    isSignedIn: !isGuest(user),
     currentUrl: ctx.url,
     userId,
     user,
     db,
+    isAdmin,
+    isUser,
+    isGuest,
   };
 
   await next();
