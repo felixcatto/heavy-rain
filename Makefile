@@ -27,3 +27,6 @@ migrate:
 
 migrate-undo:
 	npx sequelize db:migrate:undo
+
+console:
+	npx gulp console

@@ -9,9 +9,8 @@ import methodOverride from 'koa-methodoverride';
 import logger from 'koa-logger';
 import cn from 'classnames';
 import WebSocket from 'ws';
-import '../lib/container';
+import container from '../lib/container';
 import applyRouting from '../routes';
-import db from '../models';
 import patchedPugRender from '../lib/patchedPugRender';
 import makeChat from '../lib/chat';
 import { keys } from '../lib/secure';
@@ -45,7 +44,7 @@ const pug = new Pug({
 pug.use(app);
 
 app.use(async (ctx, next) => {
-  // const { userId } = ctx.session;
+  const { db } = container;
   const userId = ctx.cookies.get('userId', { signed: true });
 
   const user = await db.User.findOne({

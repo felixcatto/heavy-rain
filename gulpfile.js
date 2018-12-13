@@ -8,6 +8,7 @@ const sass = require('gulp-sass');
 const concat = require('gulp-concat');
 const postcss = require('gulp-postcss');
 const cssImport = require('postcss-import');
+const repl = require('repl');
 const webpackConfig = require('./webpack.config.js');
 
 
@@ -22,7 +23,7 @@ const serverJsPath = [
 let server;
 const devServer = Browser.create();
 const bundler = webpack(webpackConfig);
-bundler.plugin('done', () => devServer.reload());
+bundler.hooks.done.tap('done', () => devServer.reload());
 
 const clearCache = () => Object.keys(require.cache)
   .filter(p => !p.match(/node_modules/) && p.match(/dist/))
@@ -59,6 +60,18 @@ const startDevServer = (done) => {
 const reloadDev = (done) => {
   devServer.reload();
   done();
+};
+
+const serverConsole = (done) => {
+  done();
+  const container = require('./dist/lib/container').default; // eslint-disable-line
+  const replServer = repl.start({
+    prompt: 'Console > ',
+  });
+
+  Object.keys(container).forEach((key) => {
+    replServer.context[key] = container[key];
+  });
 };
 
 const transpileScss = () => gulp.src(['public/**/*.scss', 'views/**/*.scss'])
@@ -111,4 +124,8 @@ const prod = gulp.series(
 );
 
 
-module.exports = { dev, prod };
+module.exports = {
+  dev,
+  prod,
+  console: serverConsole,
+};
