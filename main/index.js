@@ -49,12 +49,12 @@ const pug = new Pug({
 pug.use(app);
 
 app.use(async (ctx, next) => {
-  const { db } = container;
+  const { User, Role } = container;
   const userId = ctx.cookies.get('userId', { signed: true });
 
-  let currentUser = await db.User.findOne({
+  let currentUser = await User.findOne({
     where: { id: userId },
-    include: [{ model: db.Role }],
+    include: [{ model: Role }],
   });
 
   if (!currentUser) {
@@ -68,7 +68,6 @@ app.use(async (ctx, next) => {
     currentUrl: ctx.url,
     userId,
     currentUser,
-    db,
     isAdmin: isAdmin(currentUser),
     isUser: isUser(currentUser),
     isGuest: isGuest(currentUser),
